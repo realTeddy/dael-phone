@@ -16,6 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
+import me.tewodros.dael.R
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -58,7 +60,7 @@ fun DialerScreen(onBack: () -> Unit, onCall: () -> Unit) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             BackButton(onBack)
             Text(
-                number.ifEmpty { "☎️" },
+                number.ifEmpty { "Phone" },
                 color = Color.White,
                 fontSize = if (number.length > 8) 30.sp else 42.sp,
                 fontWeight = FontWeight.Bold,
@@ -84,7 +86,11 @@ fun DialerScreen(onBack: () -> Unit, onCall: () -> Unit) {
                         speaker.say(digitWords[key] ?: key)
                         if (number.length < 12) number += key
                     }) {
-                        Text(key, fontSize = 40.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                        when (key) {
+                            "⭐" -> Icon(painterResource(R.drawable.ic_key_star), "star", tint = Color.Unspecified, modifier = Modifier.size(52.dp))
+                            "❤️" -> Icon(painterResource(R.drawable.ic_key_heart), "heart", tint = Color.Unspecified, modifier = Modifier.size(52.dp))
+                            else -> Text(key, fontSize = 40.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                        }
                     }
                 }
             }

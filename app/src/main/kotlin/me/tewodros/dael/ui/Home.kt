@@ -6,14 +6,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,24 +27,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.tewodros.dael.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-data class HomeApp(val route: String, val label: String, val emoji: String)
+data class HomeApp(val route: String, val label: String, val icon: Int)
 
 val homeApps = listOf(
-    HomeApp(Routes.DIALER, "Phone", "📞"),
-    HomeApp(Routes.CONTACTS, "Family", "👨‍👩‍👦"),
-    HomeApp(Routes.ANIMALS, "Animals", "🐶"),
-    HomeApp(Routes.PIANO, "Piano", "🎹"),
-    HomeApp(Routes.PAINT, "Paint", "🎨"),
-    HomeApp(Routes.PEEKABOO, "Peekaboo", "🙈"),
+    HomeApp(Routes.DIALER, "Phone", R.drawable.ic_tile_phone),
+    HomeApp(Routes.CONTACTS, "Family", R.drawable.ic_tile_family),
+    HomeApp(Routes.ANIMALS, "Animals", R.drawable.ic_tile_animals),
+    HomeApp(Routes.PIANO, "Piano", R.drawable.ic_tile_piano),
+    HomeApp(Routes.PAINT, "Paint", R.drawable.ic_tile_paint),
+    HomeApp(Routes.PEEKABOO, "Peekaboo", R.drawable.ic_tile_peekaboo),
 )
 
 @Composable
@@ -65,25 +68,29 @@ fun HomeScreen(onOpen: (String) -> Unit, onParentGate: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(clock, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                Text("📶 🔋", color = Color.White, fontSize = 18.sp)
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Icon(painterResource(R.drawable.ic_signal), null, tint = Color.Unspecified, modifier = Modifier.size(22.dp))
+                    Icon(painterResource(R.drawable.ic_battery), null, tint = Color.Unspecified, modifier = Modifier.size(26.dp))
+                }
             }
-            Text(
-                "Hi! 👋",
-                color = Color.White,
-                fontSize = 40.sp,
-                fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.padding(start = 24.dp, top = 8.dp, bottom = 8.dp),
-            )
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(20.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 24.dp, top = 8.dp, bottom = 8.dp)) {
+                Text("Hi!", color = Color.White, fontSize = 40.sp, fontWeight = FontWeight.ExtraBold)
+                Spacer(Modifier.width(10.dp))
+                Icon(painterResource(R.drawable.ic_hand_wave), null, tint = Color.Unspecified, modifier = Modifier.size(44.dp))
+            }
+            // Plain rows instead of a lazy grid: six fixed tiles need no recycling,
+            // and fewer moving parts means fewer ways to end up with a blank screen.
+            Column(
+                Modifier.fillMaxSize().padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
-                modifier = Modifier.fillMaxSize(),
             ) {
-                items(homeApps) { app ->
-                    val idx = homeApps.indexOf(app)
-                    BigTile(app.label, app.emoji, Palette.tiles[idx % Palette.tiles.size]) { onOpen(app.route) }
+                homeApps.chunked(2).forEachIndexed { rowIdx, pair ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                        pair.forEachIndexed { colIdx, app ->
+                            val idx = rowIdx * 2 + colIdx
+                            BigTile(app.label, app.icon, Palette.tiles[idx % Palette.tiles.size], Modifier.weight(1f)) { onOpen(app.route) }
+                        }
+                    }
                 }
             }
         }

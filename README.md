@@ -20,6 +20,27 @@ Back gestures cannot leave it. Android shows a one-time confirmation dialog the 
 Use "Unpin and exit app" in parent settings to leave. The app also registers as a HOME launcher,
 so on a dedicated old phone you can make it the default home screen.
 
+## Voices and icons
+
+Spoken phrases are pre-generated natural voice clips in `app/src/main/res/raw`, made with the
+[Kokoro](https://github.com/hexgrad/kokoro) neural TTS by `tools/gen_voices.py`. Re-run it with
+`--child <name>` to regenerate them for your own child. Phrases without a clip (for example a
+family member with an unusual name) fall back to the phone's text-to-speech engine.
+Icons are drawn as vector drawables by `tools/gen_icons.py`.
+
+## Making it impossible to unpin (dedicated phone only)
+
+Screen pinning can be escaped by holding Back and Recents. On a spare phone with no Google
+account signed in, make the app the device owner once over ADB and lock task mode becomes
+unescapable until you remove it:
+
+```
+adb shell dpm set-device-owner me.tewodros.dael/.DaelAdmin
+adb shell dpm remove-active-admin me.tewodros.dael/.DaelAdmin   # to undo
+```
+
+This is not possible on a phone that already has accounts, which is why it is not the default.
+
 ## Build
 
 Needs JDK 17+ and the Android SDK (`local.properties` points at `~/Android/Sdk`).

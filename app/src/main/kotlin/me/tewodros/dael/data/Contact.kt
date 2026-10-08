@@ -8,14 +8,14 @@ import java.util.UUID
 data class Contact(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
-    val emoji: String = "🙂",
+    val avatar: String = "woman",
     val photoPath: String? = null,
     val videoPaths: List<String> = emptyList(),
 ) {
     fun toJson(): JSONObject = JSONObject().apply {
         put("id", id)
         put("name", name)
-        put("emoji", emoji)
+        put("avatar", avatar)
         put("photo", photoPath ?: JSONObject.NULL)
         put("videos", JSONArray(videoPaths))
     }
@@ -26,10 +26,19 @@ data class Contact(
             return Contact(
                 id = o.getString("id"),
                 name = o.getString("name"),
-                emoji = o.optString("emoji", "🙂"),
+                avatar = o.optString("avatar", legacyAvatar(o.optString("emoji", ""))),
                 photoPath = if (o.isNull("photo")) null else o.getString("photo"),
                 videoPaths = List(videos.length()) { videos.getString(it) },
             )
+        }
+
+        /** Contacts saved by early builds stored an emoji instead of an avatar key. */
+        private fun legacyAvatar(emoji: String): String = when (emoji) {
+            "👨", "👴" -> if (emoji == "👴") "grandpa" else "man"
+            "👵" -> "grandma"
+            "👦" -> "boy"
+            "👧" -> "girl"
+            else -> "woman"
         }
 
         fun listFromJson(raw: String?): List<Contact> {
@@ -41,8 +50,8 @@ data class Contact(
         fun listToJson(list: List<Contact>): String = JSONArray(list.map { it.toJson() }).toString()
 
         val defaults = listOf(
-            Contact(id = "mom", name = "Mom", emoji = "👩"),
-            Contact(id = "dad", name = "Dad", emoji = "👨"),
+            Contact(id = "mom", name = "Mom", avatar = "woman"),
+            Contact(id = "dad", name = "Dad", avatar = "man"),
         )
     }
 }

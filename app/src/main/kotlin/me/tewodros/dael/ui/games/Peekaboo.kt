@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.layout.size
+import me.tewodros.dael.R
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,7 +62,7 @@ fun PeekabooScreen(contacts: List<Contact>, onBack: () -> Unit) {
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         ) {
             Box(Modifier.scale(scale), contentAlignment = Alignment.Center) {
-                if (revealed && who != null) Face(who!!, 240.dp) else Text("🙈", fontSize = 180.sp)
+                if (revealed && who != null) Face(who!!, 240.dp) else Icon(painterResource(R.drawable.ic_tile_peekaboo), "hidden", tint = Color.Unspecified, modifier = Modifier.size(240.dp))
             }
             Spacer(Modifier.height(24.dp))
             Text(

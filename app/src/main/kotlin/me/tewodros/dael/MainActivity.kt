@@ -45,7 +45,10 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         hideSystemBars()
         lifecycleScope.launch {
-            if (repo.settings.first().kiosk) runCatching { startLockTask() }
+            if (repo.settings.first().kiosk) {
+                DaelAdmin.allowLockTask(this@MainActivity)
+                runCatching { startLockTask() }
+            }
         }
     }
 

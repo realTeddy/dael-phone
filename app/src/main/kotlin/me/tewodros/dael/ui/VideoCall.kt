@@ -19,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CallEnd
 import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
+import me.tewodros.dael.R
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -121,7 +123,7 @@ fun VideoCallScreen(contact: Contact, childName: String, skipRinging: Boolean, o
                 Spacer(Modifier.height(24.dp))
                 Text(contact.name, color = Color.White, fontSize = 40.sp, fontWeight = FontWeight.ExtraBold)
                 Text(
-                    when (phase) { Phase.RINGING -> "Calling…"; Phase.CONNECTED -> "📹 Connected"; Phase.ENDED -> "Bye bye! 👋" },
+                    when (phase) { Phase.RINGING -> "Calling…"; Phase.CONNECTED -> "Connected"; Phase.ENDED -> "Bye bye!" },
                     color = Color.White.copy(alpha = 0.8f), fontSize = 24.sp,
                 )
             }
@@ -147,16 +149,18 @@ fun VideoCallScreen(contact: Contact, childName: String, skipRinging: Boolean, o
     }
 }
 
+private data class Character(val icon: Int, val name: String, val line: String)
+
 private val characters = listOf(
-    Triple("🦁", "Lion", "Roar! Roar!"),
-    Triple("🐸", "Frog", "Ribbit ribbit!"),
-    Triple("🐮", "Cow", "Moo! Moo!"),
-    Triple("🐔", "Chicken", "Cluck cluck cluck!"),
-    Triple("🐶", "Puppy", "Woof woof!"),
-    Triple("🐱", "Kitty", "Meow meow!"),
-    Triple("🚒", "Fire truck", "Nee naw nee naw!"),
-    Triple("🚂", "Train", "Choo choo!"),
-    Triple("🤖", "Robot", "Beep boop beep!"),
+    Character(R.drawable.ic_lion, "Lion", "Roar! Roar!"),
+    Character(R.drawable.ic_frog, "Frog", "Ribbit ribbit!"),
+    Character(R.drawable.ic_cow, "Cow", "Moo! Moo!"),
+    Character(R.drawable.ic_chicken, "Chicken", "Cluck cluck cluck!"),
+    Character(R.drawable.ic_dog, "Puppy", "Woof woof!"),
+    Character(R.drawable.ic_cat, "Kitty", "Meow meow!"),
+    Character(R.drawable.ic_firetruck, "Fire truck", "Nee naw nee naw!"),
+    Character(R.drawable.ic_train, "Train", "Choo choo!"),
+    Character(R.drawable.ic_robot, "Robot", "Beep boop beep!"),
 )
 
 /** What happens when the child dials any number: a silly character picks up. */
@@ -169,7 +173,7 @@ fun RandomCallScreen(childName: String, onEnd: () -> Unit) {
     LaunchedEffect(Unit) {
         delay(2500)
         connected = true
-        speaker.say("Hello $childName! This is the ${who.second}! ${who.third} Bye bye!")
+        speaker.say("Hello $childName! This is the ${who.name}! ${who.line} Bye bye!")
         delay(9000)
         onEnd()
     }
@@ -179,9 +183,9 @@ fun RandomCallScreen(childName: String, onEnd: () -> Unit) {
 
     Box(Modifier.fillMaxSize().background(Palette.bg)) {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center) {
-            Text(who.first, fontSize = 160.sp, modifier = Modifier.scale(if (connected) scale else 1f))
+            Icon(painterResource(who.icon), who.name, tint = Color.Unspecified, modifier = Modifier.size(240.dp).scale(if (connected) scale else 1f))
             Spacer(Modifier.height(16.dp))
-            Text(if (connected) who.second else "Ring ring…", color = Color.White, fontSize = 40.sp, fontWeight = FontWeight.ExtraBold)
+            Text(if (connected) who.name else "Ring ring…", color = Color.White, fontSize = 40.sp, fontWeight = FontWeight.ExtraBold)
         }
         Box(Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(32.dp)) {
             RoundButton(Palette.red, size = 96.dp, onClick = { Tones.blip(); speaker.stop(); onEnd() }) {

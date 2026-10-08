@@ -9,7 +9,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -56,7 +60,14 @@ fun DaelApp(repo: Repo, onExitApp: () -> Unit) {
     // Back button never leaves the app. On the home screen it is simply swallowed.
     BackHandler(enabled = route == Routes.HOME) { }
 
-    Box(Modifier.fillMaxSize()) {
+    // Keep every screen clear of the camera cutout, rounded corners and gesture areas.
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Palette.bg)
+            .safeDrawingPadding()
+            .padding(horizontal = 8.dp, vertical = 6.dp)
+    ) {
         AppNavHost(nav, repo, contacts, settings, onExitApp)
         incoming?.let { inc ->
             IncomingCallScreen(

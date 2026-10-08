@@ -5,6 +5,14 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import me.tewodros.dael.ui.Avatars
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -139,7 +147,6 @@ private fun ContactEditor(repo: Repo, contact: Contact) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var name by remember(contact.id) { mutableStateOf(contact.name) }
-    var emoji by remember(contact.id) { mutableStateOf(contact.emoji) }
 
     val pickPhoto = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         uri ?: return@rememberLauncherForActivityResult
@@ -175,13 +182,21 @@ private fun ContactEditor(repo: Repo, contact: Contact) {
                 singleLine = true,
                 modifier = Modifier.weight(1f),
             )
-            OutlinedTextField(
-                value = emoji,
-                onValueChange = { emoji = it; scope.launch { repo.upsert(contact.copy(emoji = it)) } },
-                label = { Text("Emoji") },
-                singleLine = true,
-                modifier = Modifier.width(80.dp),
-            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text("Avatar", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
+            Avatars.keys.forEach { key ->
+                Icon(
+                    painterResource(Avatars.drawable(key)),
+                    contentDescription = key,
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(if (contact.avatar == key) 2.dp else 0.dp, Palette.coral, CircleShape)
+                        .clickable { scope.launch { repo.upsert(contact.copy(avatar = key)) } },
+                )
+            }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = { pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }) { Text("Photo") }

@@ -60,7 +60,6 @@ fun ContactsScreen(contacts: List<Contact>, onBack: () -> Unit, onCall: (Contact
                     Face(c, 120.dp)
                     Spacer(Modifier.height(12.dp))
                     Text(c.name, color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
-                    Text("📹", fontSize = 24.sp)
                 }
             }
         }

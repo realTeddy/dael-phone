@@ -17,7 +17,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -65,7 +68,7 @@ fun PaintScreen(onBack: () -> Unit) {
                 }
             }
             RoundButton(Palette.surface, size = 56.dp, onClick = { Tones.blip(); strokes.clear(); version++ }) {
-                Text("🗑️", fontSize = 24.sp)
+                Icon(Icons.Filled.Delete, contentDescription = "Clear", tint = Color.White)
             }
         }
         Canvas(

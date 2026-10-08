@@ -57,7 +57,7 @@ fun IncomingCallScreen(contact: Contact, onAnswer: () -> Unit, onDecline: () -> 
             Face(contact, 220.dp)
             Spacer(Modifier.height(24.dp))
             Text(contact.name, color = Color.White, fontSize = 44.sp, fontWeight = FontWeight.ExtraBold)
-            Text("is calling 📹", color = Color.White.copy(alpha = 0.8f), fontSize = 26.sp)
+            Text("is calling", color = Color.White.copy(alpha = 0.8f), fontSize = 26.sp)
         }
         Row(
             Modifier.align(Alignment.BottomCenter).fillMaxWidth().navigationBarsPadding().padding(32.dp),

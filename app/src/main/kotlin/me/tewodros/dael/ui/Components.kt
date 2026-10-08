@@ -26,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import me.tewodros.dael.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,7 +41,7 @@ import java.io.File
 @Composable
 fun BigTile(
     label: String,
-    emoji: String,
+    icon: Int,
     color: Color,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
@@ -61,7 +63,7 @@ fun BigTile(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
     ) {
-        Text(emoji, fontSize = 56.sp)
+        Icon(painterResource(icon), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.size(72.dp))
         Text(label, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White, textAlign = TextAlign.Center)
     }
 }
@@ -103,7 +105,25 @@ fun Face(contact: Contact, size: androidx.compose.ui.unit.Dp, modifier: Modifier
             AsyncImage(model = photo, contentDescription = contact.name, modifier = Modifier.fillMaxSize(),
                 contentScale = androidx.compose.ui.layout.ContentScale.Crop)
         } else {
-            Text(contact.emoji, fontSize = (size.value * 0.55f).sp)
+            Icon(
+                painterResource(Avatars.drawable(contact.avatar)),
+                contentDescription = contact.name,
+                tint = Color.Unspecified,
+                modifier = Modifier.fillMaxSize(),
+            )
         }
+    }
+}
+
+/** Built-in avatars for contacts without a photo. Keys are stored in the contact. */
+object Avatars {
+    val keys = listOf("woman", "man", "girl", "boy", "grandma", "grandpa")
+    fun drawable(key: String): Int = when (key) {
+        "man" -> R.drawable.ic_avatar_man
+        "girl" -> R.drawable.ic_avatar_girl
+        "boy" -> R.drawable.ic_avatar_boy
+        "grandma" -> R.drawable.ic_avatar_grandma
+        "grandpa" -> R.drawable.ic_avatar_grandpa
+        else -> R.drawable.ic_avatar_woman
     }
 }
