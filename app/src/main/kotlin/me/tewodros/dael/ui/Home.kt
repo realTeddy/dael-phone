@@ -41,8 +41,8 @@ import java.util.Locale
 data class HomeApp(val route: String, val label: String, val icon: Int)
 
 val homeApps = listOf(
-    HomeApp(Routes.DIALER, "Phone", R.drawable.ic_tile_phone),
-    HomeApp(Routes.CONTACTS, "Family", R.drawable.ic_tile_family),
+    HomeApp(Routes.PHONE, "Phone", R.drawable.ic_tile_phone),
+    HomeApp(Routes.BUBBLES, "Bubbles", R.drawable.ic_tile_bubbles),
     HomeApp(Routes.ANIMALS, "Animals", R.drawable.ic_tile_animals),
     HomeApp(Routes.PIANO, "Piano", R.drawable.ic_tile_piano),
     HomeApp(Routes.PAINT, "Paint", R.drawable.ic_tile_paint),

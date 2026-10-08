@@ -24,6 +24,7 @@ ANIMALS = [("Dog", "Woof woof!"), ("Cat", "Meow!"), ("Cow", "Moo!"), ("Pig", "Oi
 CHARACTERS = [("Lion", "Roar! Roar!", MALE), ("Frog", "Ribbit ribbit!", FEMALE), ("Cow", "Moo! Moo!", FEMALE),
               ("Chicken", "Cluck cluck cluck!", FEMALE), ("Puppy", "Woof woof!", FEMALE), ("Kitty", "Meow meow!", FEMALE),
               ("Fire truck", "Nee naw nee naw!", MALE), ("Train", "Choo choo!", MALE), ("Robot", "Beep boop beep!", MALE)]
+COLORS = ["Red", "Blue", "Green", "Yellow", "Purple", "Pink", "Orange"]
 DIGITS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "star", "heart"]
 
 
@@ -37,6 +38,8 @@ def phrases(child: str):
     out = []
     for d in DIGITS:
         out.append((d, NARRATOR))
+    for c in COLORS:
+        out.append((f"{c}!", NARRATOR))
     for name, sound in ANIMALS:
         out.append((f"{name}. {sound}", NARRATOR))
     for name, line, voice in CHARACTERS:

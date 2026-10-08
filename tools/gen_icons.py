@@ -242,6 +242,11 @@ ICONS["tile_peekaboo"] = [
     *[F(rrect(18 + i * 7, 30, 6, 20, 3), YELLOW) for i in range(4)],
     *[F(rrect(59 + i * 7, 30, 6, 20, 3), YELLOW) for i in range(4)],
 ]
+ICONS["tile_bubbles"] = [
+    F(circle(36, 58, 24), "#DDEBFF"), F(circle(70, 34, 16), "#DDEBFF"), F(circle(72, 72, 11), "#DDEBFF"),
+    F(circle(28, 48, 6), WHITE), F(circle(65, 27, 4), WHITE), F(circle(69, 68, 3), WHITE),
+    S(circle(36, 58, 24), WHITE, 3), S(circle(70, 34, 16), WHITE, 3), S(circle(72, 72, 11), WHITE, 2.5),
+]
 ICONS["tile_call"] = ICONS["tile_phone"]
 
 # ----- dial pad extras -----

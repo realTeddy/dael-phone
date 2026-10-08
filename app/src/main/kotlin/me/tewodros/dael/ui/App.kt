@@ -26,6 +26,7 @@ import me.tewodros.dael.data.Contact
 import me.tewodros.dael.data.Repo
 import me.tewodros.dael.data.Settings
 import me.tewodros.dael.ui.games.AnimalsScreen
+import me.tewodros.dael.ui.games.BubblesScreen
 import me.tewodros.dael.ui.games.PaintScreen
 import me.tewodros.dael.ui.games.PeekabooScreen
 import me.tewodros.dael.ui.games.PianoScreen
@@ -100,9 +101,15 @@ private fun AppNavHost(
         composable(Routes.RANDOM_CALL) {
             RandomCallScreen(settings.childName) { nav.popBackStack() }
         }
-        composable(Routes.CONTACTS) {
-            ContactsScreen(contacts, onBack = { nav.popBackStack() }, onCall = { nav.navigate(Routes.call(it.id)) })
+        composable(Routes.PHONE) {
+            PhoneScreen(
+                contacts,
+                onBack = { nav.popBackStack() },
+                onCall = { nav.navigate(Routes.call(it.id)) },
+                onKeypad = { nav.navigate(Routes.DIALER) },
+            )
         }
+        composable(Routes.BUBBLES) { BubblesScreen { nav.popBackStack() } }
         composable("${Routes.CALL}?answered={answered}") { entry ->
             val id = entry.arguments?.getString("id")
             val answered = entry.arguments?.getString("answered") == "true"
