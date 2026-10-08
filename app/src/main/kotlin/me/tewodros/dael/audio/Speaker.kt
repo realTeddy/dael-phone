@@ -3,7 +3,10 @@ package me.tewodros.dael.audio
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.os.Handler
+import android.os.Looper
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.speech.tts.Voice
 import androidx.compose.runtime.staticCompositionLocalOf
 import java.util.Locale
@@ -17,6 +20,7 @@ class Speaker(context: Context) {
     private var ready = false
     private lateinit var tts: TextToSpeech
     private var player: MediaPlayer? = null
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     init {
         tts = TextToSpeech(app) { status ->
@@ -38,22 +42,51 @@ class Speaker(context: Context) {
         if (best != null && best.quality >= Voice.QUALITY_HIGH) tts.voice = best
     }
 
-    fun say(text: String, interrupt: Boolean = true) {
+    fun say(text: String, interrupt: Boolean = true, onDone: (() -> Unit)? = null) {
         val resId = app.resources.getIdentifier(slug(text), "raw", app.packageName)
         if (resId != 0) {
-            if (interrupt) stop()
-            player = MediaPlayer.create(app, resId, AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                .build(), 0)?.apply {
-                setOnCompletionListener { it.release(); if (player === it) player = null }
-                start()
-            }
+            playRaw(resId, interrupt, onDone)
             return
         }
-        if (!ready) return
+        if (!ready) { onDone?.invoke(); return }
         val mode = if (interrupt) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD
-        tts.speak(text, mode, null, text.hashCode().toString())
+        val id = text.hashCode().toString()
+        if (onDone != null) {
+            tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                override fun onStart(utteranceId: String?) {}
+                override fun onError(utteranceId: String?) { if (utteranceId == id) mainHandler.post(onDone) }
+                override fun onDone(utteranceId: String?) { if (utteranceId == id) mainHandler.post(onDone) }
+            })
+        }
+        tts.speak(text, mode, null, id)
+    }
+
+    /** Plays a bundled sound effect such as a real animal recording (res/raw/s_<key>.ogg). */
+    fun sound(key: String, interrupt: Boolean = true, onDone: (() -> Unit)? = null) {
+        val resId = app.resources.getIdentifier("s_$key", "raw", app.packageName)
+        if (resId == 0) { onDone?.invoke(); return }
+        playRaw(resId, interrupt, onDone)
+    }
+
+    /** Says a name, then plays its sound, then runs [onDone]. Used by the animal game and pretend calls. */
+    fun sayThenSound(text: String, soundKey: String, onDone: (() -> Unit)? = null) {
+        say(text) { sound(soundKey, interrupt = false, onDone = onDone) }
+    }
+
+    private fun playRaw(resId: Int, interrupt: Boolean, onDone: (() -> Unit)?) {
+        if (interrupt) stop()
+        val mp = MediaPlayer.create(app, resId, AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build(), 0)
+        if (mp == null) { onDone?.invoke(); return }
+        player = mp
+        mp.setOnCompletionListener {
+            it.release()
+            if (player === it) player = null
+            onDone?.invoke()
+        }
+        mp.start()
     }
 
     fun stop() {

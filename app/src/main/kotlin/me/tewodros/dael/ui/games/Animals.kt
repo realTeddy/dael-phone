@@ -41,21 +41,21 @@ import me.tewodros.dael.audio.Tones
 import me.tewodros.dael.ui.BackButton
 import me.tewodros.dael.ui.Palette
 
-private data class Animal(val icon: Int, val name: String, val sound: String)
+private data class Animal(val icon: Int, val name: String, val key: String)
 
 private val animals = listOf(
-    Animal(R.drawable.ic_dog, "Dog", "Woof woof!"),
-    Animal(R.drawable.ic_cat, "Cat", "Meow!"),
-    Animal(R.drawable.ic_cow, "Cow", "Moo!"),
-    Animal(R.drawable.ic_pig, "Pig", "Oink oink!"),
-    Animal(R.drawable.ic_chicken, "Chicken", "Cluck cluck!"),
-    Animal(R.drawable.ic_duck, "Duck", "Quack quack!"),
-    Animal(R.drawable.ic_sheep, "Sheep", "Baa!"),
-    Animal(R.drawable.ic_horse, "Horse", "Neigh!"),
-    Animal(R.drawable.ic_lion, "Lion", "Roar!"),
-    Animal(R.drawable.ic_elephant, "Elephant", "Toot!"),
-    Animal(R.drawable.ic_frog, "Frog", "Ribbit!"),
-    Animal(R.drawable.ic_monkey, "Monkey", "Ooh ooh ah ah!"),
+    Animal(R.drawable.ic_dog, "Dog", "dog"),
+    Animal(R.drawable.ic_cat, "Cat", "cat"),
+    Animal(R.drawable.ic_cow, "Cow", "cow"),
+    Animal(R.drawable.ic_pig, "Pig", "pig"),
+    Animal(R.drawable.ic_chicken, "Chicken", "chicken"),
+    Animal(R.drawable.ic_duck, "Duck", "duck"),
+    Animal(R.drawable.ic_sheep, "Sheep", "sheep"),
+    Animal(R.drawable.ic_horse, "Horse", "horse"),
+    Animal(R.drawable.ic_lion, "Lion", "lion"),
+    Animal(R.drawable.ic_elephant, "Elephant", "elephant"),
+    Animal(R.drawable.ic_frog, "Frog", "frog"),
+    Animal(R.drawable.ic_monkey, "Monkey", "monkey"),
 )
 
 @Composable
@@ -86,7 +86,7 @@ fun AnimalsScreen(onBack: () -> Unit) {
                         .clickable {
                             active = i
                             Tones.play(300.0 + i * 50, 200)
-                            speaker.say("${a.name}. ${a.sound}")
+                            speaker.sayThenSound(a.name, a.key)
                         },
                     contentAlignment = Alignment.Center,
                 ) { Icon(painterResource(a.icon), contentDescription = a.name, tint = Color.Unspecified, modifier = Modifier.fillMaxSize(0.8f)) }

@@ -149,18 +149,18 @@ fun VideoCallScreen(contact: Contact, childName: String, skipRinging: Boolean, o
     }
 }
 
-private data class Character(val icon: Int, val name: String, val line: String)
+private data class Character(val icon: Int, val name: String, val key: String)
 
 private val characters = listOf(
-    Character(R.drawable.ic_lion, "Lion", "Roar! Roar!"),
-    Character(R.drawable.ic_frog, "Frog", "Ribbit ribbit!"),
-    Character(R.drawable.ic_cow, "Cow", "Moo! Moo!"),
-    Character(R.drawable.ic_chicken, "Chicken", "Cluck cluck cluck!"),
-    Character(R.drawable.ic_dog, "Puppy", "Woof woof!"),
-    Character(R.drawable.ic_cat, "Kitty", "Meow meow!"),
-    Character(R.drawable.ic_firetruck, "Fire truck", "Nee naw nee naw!"),
-    Character(R.drawable.ic_train, "Train", "Choo choo!"),
-    Character(R.drawable.ic_robot, "Robot", "Beep boop beep!"),
+    Character(R.drawable.ic_lion, "Lion", "lion"),
+    Character(R.drawable.ic_frog, "Frog", "frog"),
+    Character(R.drawable.ic_cow, "Cow", "cow"),
+    Character(R.drawable.ic_chicken, "Chicken", "chicken"),
+    Character(R.drawable.ic_dog, "Puppy", "dog"),
+    Character(R.drawable.ic_cat, "Kitty", "cat"),
+    Character(R.drawable.ic_firetruck, "Fire truck", "firetruck"),
+    Character(R.drawable.ic_train, "Train", "train"),
+    Character(R.drawable.ic_robot, "Robot", "robot"),
 )
 
 /** What happens when the child dials any number: a silly character picks up. */
@@ -173,8 +173,14 @@ fun RandomCallScreen(childName: String, onEnd: () -> Unit) {
     LaunchedEffect(Unit) {
         delay(2500)
         connected = true
-        speaker.say("Hello $childName! This is the ${who.name}! ${who.line} Bye bye!")
-        delay(9000)
+        var finished = false
+        speaker.sayThenSound("Hello $childName! This is the ${who.name}!", who.key) {
+            speaker.say("Bye bye!") { finished = true }
+        }
+        // Wait for the sequence, with a ceiling so a playback hiccup never strands the screen.
+        var waited = 0
+        while (!finished && waited < 15_000) { delay(200); waited += 200 }
+        delay(800)
         onEnd()
     }
 

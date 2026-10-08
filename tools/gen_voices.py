@@ -40,7 +40,8 @@ def phrases(child: str):
     for name, sound in ANIMALS:
         out.append((f"{name}. {sound}", NARRATOR))
     for name, line, voice in CHARACTERS:
-        out.append((f"Hello {child}! This is the {name}! {line} Bye bye!", voice))
+        out.append((f"Hello {child}! This is the {name}!", voice))
+    out.append(("Bye bye!", FEMALE))
     for name in FEMALE_NAMES + MALE_NAMES:
         voice = MALE if name in MALE_NAMES else FEMALE
         out.append((f"Calling {name}", NARRATOR))
@@ -53,10 +54,30 @@ def phrases(child: str):
     return out
 
 
+def synth(pipe, text, voice, np):
+    """Single words come out clipped when synthesized alone ("six" loses its final consonant), so short
+    phrases are generated with a continuation sentence and cut at the phrase's end timestamp."""
+    if len(text.split()) <= 2:
+        results = list(pipe(f"{text}. Okay then.", voice=voice, speed=0.95))
+        tokens = [t for r in results for t in (r.tokens or [])]
+        full = np.concatenate([r.audio.numpy() for r in results])
+        n_words = len(text.split())
+        end = tokens[n_words - 1].end_ts if len(tokens) >= n_words else None
+        if end:
+            audio = full[: int((end + 0.15) * 24000)]
+        else:
+            audio = np.concatenate([r.audio.numpy() for r in pipe(text, voice=voice, speed=0.95)])
+    else:
+        audio = np.concatenate([r.audio.numpy() for r in pipe(text, voice=voice, speed=0.95)])
+    pad = np.zeros(int(0.3 * 24000), dtype=audio.dtype)
+    return np.concatenate([pad[: int(0.1 * 24000)], audio, pad])
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--child", default="Dael")
     ap.add_argument("--only-missing", action="store_true")
+    ap.add_argument("--filter", default="", help="only phrases containing this text")
     args = ap.parse_args()
 
     from kokoro import KPipeline
@@ -73,8 +94,9 @@ def main():
             target = os.path.join(RAW, name + ".ogg")
             if args.only_missing and os.path.exists(target):
                 continue
-            chunks = [audio for _, _, audio in pipe(text, voice=voice, speed=0.95)]
-            audio = np.concatenate(chunks)
+            if args.filter and args.filter not in text:
+                continue
+            audio = synth(pipe, text, voice, np)
             wav = os.path.join(tmp, name + ".wav")
             sf.write(wav, audio, 24000)
             subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", wav, "-c:a", "libvorbis", "-q:a", "3", target], check=True)
