@@ -4,7 +4,6 @@ object Routes {
     const val HOME = "home"
     const val DIALER = "dialer"
     const val PHONE = "phone"
-    const val CALL = "call/{id}"
     const val RANDOM_CALL = "randomcall"
     const val ANIMALS = "animals"
     const val PIANO = "piano"

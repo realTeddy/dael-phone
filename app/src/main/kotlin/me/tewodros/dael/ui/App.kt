@@ -1,26 +1,20 @@
 package me.tewodros.dael.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import me.tewodros.dael.audio.AudioRoute
 import me.tewodros.dael.data.Contact
@@ -37,37 +31,31 @@ import kotlin.random.Random
 
 @Composable
 fun DaelApp(repo: Repo, onExitApp: () -> Unit) {
-    val nav = rememberNavController()
+    val nav = remember { Nav(Routes.HOME) }
     val contacts by repo.contacts.collectAsStateWithLifecycle(initialValue = Contact.defaults)
     val settings by repo.settings.collectAsStateWithLifecycle(initialValue = Settings())
-    val backStack by nav.currentBackStackEntryAsState()
-    val route = backStack?.destination?.route
+    val route = nav.current
 
     var incoming by remember { mutableStateOf<Contact?>(null) }
 
-    // Surprise calls: wait a random while, then ring if the child is on a "safe" screen.
     LaunchedEffect(settings.speakerOnly) { AudioRoute.forceSpeaker = settings.speakerOnly }
 
+    // Surprise calls: wait a random while, then ring if the child is on a "safe" screen.
     LaunchedEffect(settings.incomingCalls, settings.incomingEveryMinutes, contacts.size) {
         if (!settings.incomingCalls || contacts.isEmpty()) return@LaunchedEffect
         while (true) {
             val base = settings.incomingEveryMinutes * 60_000L
             delay(base + Random.nextLong(base / 2))
-            // Read the live route here; the value captured when the effect started would be stale.
-            val now = nav.currentBackStackEntry?.destination?.route
+            val now = nav.current
             val onSafeScreen = now != Routes.GATE && now != Routes.SETTINGS &&
-                now?.startsWith("call/") != true && now != Routes.RANDOM_CALL
+                !now.startsWith("call/") && now != Routes.RANDOM_CALL
             if (incoming == null && onSafeScreen) incoming = contacts.random()
         }
     }
 
-    // Back never leaves the app and never reaches the navigation library: a double tap used to pop
-    // the home screen itself and leave a blank NavHost. Pop only when there is somewhere to go.
-    BackHandler(enabled = true) {
-        if (nav.previousBackStackEntry != null) nav.popBackStack()
-    }
+    // Every back press is ours. The stack never empties, so mashing Back can only reach Home.
+    BackHandler(enabled = true) { nav.back() }
 
-    // Keep every screen clear of the camera cutout, rounded corners and gesture areas.
     Box(
         Modifier
             .fillMaxSize()
@@ -75,7 +63,7 @@ fun DaelApp(repo: Repo, onExitApp: () -> Unit) {
             .safeDrawingPadding()
             .padding(horizontal = 8.dp, vertical = 6.dp)
     ) {
-        AppNavHost(nav, repo, contacts, settings, onExitApp)
+        Screen(route, nav, repo, contacts, settings, onExitApp)
         incoming?.let { inc ->
             IncomingCallScreen(
                 contact = inc,
@@ -90,54 +78,44 @@ fun DaelApp(repo: Repo, onExitApp: () -> Unit) {
 }
 
 @Composable
-private fun AppNavHost(
-    nav: NavHostController,
+private fun Screen(
+    route: String,
+    nav: Nav,
     repo: Repo,
     contacts: List<Contact>,
     settings: Settings,
     onExitApp: () -> Unit,
 ) {
-    NavHost(nav, startDestination = Routes.HOME) {
-        composable(Routes.HOME) {
-            HomeScreen(onOpen = { nav.navigate(it) }, onParentGate = { nav.navigate(Routes.GATE) })
-        }
-        composable(Routes.DIALER) {
-            DialerScreen(onBack = { nav.popBackStack() }, onCall = { nav.navigate(Routes.RANDOM_CALL) })
-        }
-        composable(Routes.RANDOM_CALL) {
-            RandomCallScreen(settings.childName) { nav.popBackStack() }
-        }
-        composable(Routes.PHONE) {
-            PhoneScreen(
-                contacts,
-                onBack = { nav.popBackStack() },
-                onCall = { nav.navigate(Routes.call(it.id)) },
-                onKeypad = { nav.navigate(Routes.DIALER) },
-            )
-        }
-        composable(Routes.BUBBLES) { BubblesScreen { nav.popBackStack() } }
-        composable("${Routes.CALL}?answered={answered}") { entry ->
-            val id = entry.arguments?.getString("id")
-            val answered = entry.arguments?.getString("answered") == "true"
+    when {
+        route == Routes.HOME -> HomeScreen(onOpen = { nav.navigate(it) }, onParentGate = { nav.navigate(Routes.GATE) })
+        route == Routes.PHONE -> PhoneScreen(
+            contacts,
+            onBack = { nav.back() },
+            onCall = { nav.navigate(Routes.call(it.id)) },
+            onKeypad = { nav.navigate(Routes.DIALER) },
+        )
+        route == Routes.DIALER -> DialerScreen(onBack = { nav.back() }, onCall = { nav.navigate(Routes.RANDOM_CALL) })
+        route == Routes.RANDOM_CALL -> RandomCallScreen(settings.childName) { nav.back() }
+        route.startsWith("call/") -> {
+            val id = route.removePrefix("call/").substringBefore("?")
+            val answered = route.substringAfter("?answered=", "") == "true"
             val contact = contacts.firstOrNull { it.id == id }
             if (contact == null) {
-                LaunchedEffect(Unit) { nav.popBackStack() }
+                LaunchedEffect(route) { nav.back() }
             } else {
-                VideoCallScreen(contact, settings.childName, skipRinging = answered) { nav.popBackStack() }
+                VideoCallScreen(contact, settings.childName, skipRinging = answered) { nav.back() }
             }
         }
-        composable(Routes.ANIMALS) { AnimalsScreen { nav.popBackStack() } }
-        composable(Routes.PIANO) { PianoScreen { nav.popBackStack() } }
-        composable(Routes.PAINT) { PaintScreen { nav.popBackStack() } }
-        composable(Routes.PEEKABOO) { PeekabooScreen(contacts) { nav.popBackStack() } }
-        composable(Routes.GATE) {
-            ParentGateScreen(
-                onPass = { nav.navigate(Routes.SETTINGS) { popUpTo(Routes.HOME) } },
-                onCancel = { nav.popBackStack() },
-            )
-        }
-        composable(Routes.SETTINGS) {
-            ParentSettingsScreen(repo, contacts, settings, onDone = { nav.popBackStack() }, onExitApp = onExitApp)
-        }
+        route == Routes.ANIMALS -> AnimalsScreen { nav.back() }
+        route == Routes.PIANO -> PianoScreen { nav.back() }
+        route == Routes.PAINT -> PaintScreen { nav.back() }
+        route == Routes.PEEKABOO -> PeekabooScreen(contacts) { nav.back() }
+        route == Routes.BUBBLES -> BubblesScreen { nav.back() }
+        route == Routes.GATE -> ParentGateScreen(
+            onPass = { nav.navigate(Routes.SETTINGS, popUpTo = Routes.HOME) },
+            onCancel = { nav.back() },
+        )
+        route == Routes.SETTINGS -> ParentSettingsScreen(repo, contacts, settings, onDone = { nav.back() }, onExitApp = onExitApp)
+        else -> LaunchedEffect(route) { nav.home() }
     }
 }
