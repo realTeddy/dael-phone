@@ -13,6 +13,9 @@ import kotlin.math.sin
 
 /** Tiny synth that plays a decaying sine note. Used by the piano and as tap feedback. */
 object Tones {
+    @Volatile private var appContext: android.content.Context? = null
+    fun init(context: android.content.Context) { appContext = context.applicationContext }
+
     private const val SAMPLE_RATE = 22_050
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -44,6 +47,7 @@ object Tones {
                 .setBufferSizeInBytes(pcm.size * 2)
                 .setTransferMode(AudioTrack.MODE_STATIC)
                 .build()
+            appContext?.let { AudioRoute.apply(it, track) }
             track.write(pcm, 0, pcm.size)
             track.setNotificationMarkerPosition(pcm.size)
             track.setPlaybackPositionUpdateListener(object : AudioTrack.OnPlaybackPositionUpdateListener {

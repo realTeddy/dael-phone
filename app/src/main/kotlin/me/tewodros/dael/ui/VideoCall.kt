@@ -45,6 +45,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.delay
+import me.tewodros.dael.audio.AudioRoute
 import me.tewodros.dael.audio.LocalSpeaker
 import me.tewodros.dael.audio.Tones
 import me.tewodros.dael.camera.SelfieView
@@ -66,6 +67,7 @@ fun VideoCallScreen(contact: Contact, childName: String, skipRinging: Boolean, o
 
     val player = remember {
         ExoPlayer.Builder(context).build().apply {
+            AudioRoute.apply(context, this)
             addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(state: Int) {
                     if (state == Player.STATE_ENDED) phase = Phase.ENDED

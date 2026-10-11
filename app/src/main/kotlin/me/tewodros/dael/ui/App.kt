@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
+import me.tewodros.dael.audio.AudioRoute
 import me.tewodros.dael.data.Contact
 import me.tewodros.dael.data.Repo
 import me.tewodros.dael.data.Settings
@@ -45,6 +46,8 @@ fun DaelApp(repo: Repo, onExitApp: () -> Unit) {
     var incoming by remember { mutableStateOf<Contact?>(null) }
 
     // Surprise calls: wait a random while, then ring if the child is on a "safe" screen.
+    LaunchedEffect(settings.speakerOnly) { AudioRoute.forceSpeaker = settings.speakerOnly }
+
     LaunchedEffect(settings.incomingCalls, settings.incomingEveryMinutes, contacts.size) {
         if (!settings.incomingCalls || contacts.isEmpty()) return@LaunchedEffect
         while (true) {
@@ -58,8 +61,11 @@ fun DaelApp(repo: Repo, onExitApp: () -> Unit) {
         }
     }
 
-    // Back button never leaves the app. On the home screen it is simply swallowed.
-    BackHandler(enabled = route == Routes.HOME) { }
+    // Back never leaves the app and never reaches the navigation library: a double tap used to pop
+    // the home screen itself and leave a blank NavHost. Pop only when there is somewhere to go.
+    BackHandler(enabled = true) {
+        if (nav.previousBackStackEntry != null) nav.popBackStack()
+    }
 
     // Keep every screen clear of the camera cutout, rounded corners and gesture areas.
     Box(

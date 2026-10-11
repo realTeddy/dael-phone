@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import me.tewodros.dael.audio.LocalSpeaker
 import me.tewodros.dael.audio.Speaker
+import me.tewodros.dael.audio.Tones
 import me.tewodros.dael.data.Repo
 import me.tewodros.dael.ui.DaelApp
 import me.tewodros.dael.ui.DaelTheme
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         repo = Repo(this)
         speaker = Speaker(this)
+        Tones.init(this)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         WindowCompat.setDecorFitsSystemWindows(window, false)

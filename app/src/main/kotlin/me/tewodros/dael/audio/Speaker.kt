@@ -81,6 +81,7 @@ class Speaker(context: Context) {
             .build(), 0)
         if (mp == null) { onDone?.invoke(); return }
         player = mp
+        AudioRoute.apply(app, mp)
         mp.setOnCompletionListener {
             it.release()
             if (player === it) player = null

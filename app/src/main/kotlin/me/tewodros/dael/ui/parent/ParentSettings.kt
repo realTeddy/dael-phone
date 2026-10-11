@@ -90,6 +90,9 @@ fun ParentSettingsScreen(
                     ToggleRow("Kiosk mode (pin app, block home/back)", settings.kiosk) {
                         scope.launch { repo.saveSettings(settings.copy(kiosk = it)) }
                     }
+                    ToggleRow("Always play on phone speaker (ignore earbuds)", settings.speakerOnly) {
+                        scope.launch { repo.saveSettings(settings.copy(speakerOnly = it)) }
+                    }
                     ToggleRow("Surprise incoming calls", settings.incomingCalls) {
                         scope.launch { repo.saveSettings(settings.copy(incomingCalls = it)) }
                     }

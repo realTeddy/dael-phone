@@ -24,6 +24,8 @@ data class Settings(
     /** Minimum minutes between surprise incoming calls. */
     val incomingEveryMinutes: Int = 3,
     val childName: String = "Dael",
+    /** Route audio to the phone's own speaker even when earbuds are connected. */
+    val speakerOnly: Boolean = true,
 )
 
 class Repo(private val context: Context) {
@@ -33,6 +35,7 @@ class Repo(private val context: Context) {
         val INCOMING = booleanPreferencesKey("incoming")
         val INCOMING_MIN = intPreferencesKey("incoming_min")
         val CHILD_NAME = stringPreferencesKey("child_name")
+        val SPEAKER_ONLY = booleanPreferencesKey("speaker_only")
     }
 
     val contacts: Flow<List<Contact>> = context.dataStore.data.map { p ->
@@ -46,6 +49,7 @@ class Repo(private val context: Context) {
             incomingCalls = p[Keys.INCOMING] ?: true,
             incomingEveryMinutes = p[Keys.INCOMING_MIN] ?: 3,
             childName = p[Keys.CHILD_NAME] ?: "Dael",
+            speakerOnly = p[Keys.SPEAKER_ONLY] ?: true,
         )
     }
 
@@ -78,6 +82,7 @@ class Repo(private val context: Context) {
             it[Keys.INCOMING] = s.incomingCalls
             it[Keys.INCOMING_MIN] = s.incomingEveryMinutes
             it[Keys.CHILD_NAME] = s.childName
+            it[Keys.SPEAKER_ONLY] = s.speakerOnly
         }
     }
 
