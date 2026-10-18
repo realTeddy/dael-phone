@@ -29,6 +29,9 @@ import me.tewodros.dael.ui.games.ShapesScreen
 import me.tewodros.dael.ui.games.PuzzlesScreen
 import me.tewodros.dael.ui.games.MatchScreen
 import me.tewodros.dael.ui.games.JigsawScreen
+import me.tewodros.dael.ui.games.ColorsGameScreen
+import me.tewodros.dael.ui.games.CountGameScreen
+import me.tewodros.dael.ui.games.SoundGameScreen
 import me.tewodros.dael.ui.media.PhotosScreen
 import me.tewodros.dael.ui.parent.ParentGateScreen
 import me.tewodros.dael.ui.parent.ParentSettingsScreen
@@ -121,6 +124,9 @@ private fun Screen(
         route == Routes.PUZZLES -> PuzzlesScreen(onBack = { nav.back() }, onOpen = { nav.navigate(it) })
         route == Routes.MATCH -> MatchScreen { nav.back() }
         route == Routes.JIGSAW -> JigsawScreen { nav.back() }
+        route == Routes.COLORS -> ColorsGameScreen { nav.back() }
+        route == Routes.COUNT -> CountGameScreen { nav.back() }
+        route == Routes.SOUND -> SoundGameScreen { nav.back() }
         route == Routes.GATE -> ParentGateScreen(
             onPass = { nav.navigate(Routes.SETTINGS, popUpTo = Routes.HOME) },
             onCancel = { nav.back() },

@@ -148,7 +148,7 @@ fun ShapesScreen(onBack: () -> Unit) {
     }
 }
 
-private fun DrawScope.drawShape(shape: Shape, c: Offset, size: Float, color: Color, style: DrawStyle) {
+internal fun DrawScope.drawShape(shape: Shape, c: Offset, size: Float, color: Color, style: DrawStyle) {
     val r = size / 2f
     when (shape) {
         Shape.CIRCLE -> drawCircle(color, r, c, style = style)

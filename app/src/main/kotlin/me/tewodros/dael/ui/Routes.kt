@@ -15,6 +15,9 @@ object Routes {
     const val PUZZLES = "puzzles"
     const val MATCH = "match"
     const val JIGSAW = "jigsaw"
+    const val COLORS = "colors"
+    const val COUNT = "count"
+    const val SOUND = "sound"
     const val GATE = "gate"
     const val SETTINGS = "settings"
 

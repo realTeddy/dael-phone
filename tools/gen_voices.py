@@ -52,8 +52,14 @@ def phrases(child: str):
     for sh in SHAPES:
         out.append((f"{sh}!", NARRATOR))
     for name in ANIMALS:
-    for name in ANIMALS:
         out.append((f"Find the {name}!", NARRATOR))
+    for c in COLORS:
+        out.append((f"Find the {c.lower()} one!", NARRATOR))
+    for item in ["apple", "star", "heart"]:
+        out.append((f"Count the {item}s!", NARRATOR))
+        for i, n in enumerate(NUMBERS[:5], start=1):
+            out.append((f"{n} {item}{'' if i == 1 else 's'}!", NARRATOR))
+    out.append(("Listen! Who is it?", NARRATOR))
     out.append(("Yay! You did it!", NARRATOR))
     out.append(("Try again!", NARRATOR))
     for name, voice in CHARACTERS:

@@ -31,10 +31,22 @@ fun PuzzlesScreen(onBack: () -> Unit, onOpen: (String) -> Unit) {
             BackButton(onBack)
             Text("Puzzles", color = Color.White, fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(start = 16.dp))
         }
+        val games = listOf(
+            Triple("Shapes", R.drawable.ic_tile_shapes, Routes.SHAPES),
+            Triple("Find it", R.drawable.ic_tile_match, Routes.MATCH),
+            Triple("Picture", R.drawable.ic_tile_jigsaw, Routes.JIGSAW),
+            Triple("Colors", R.drawable.ic_tile_colors, Routes.COLORS),
+            Triple("Count", R.drawable.ic_tile_count, Routes.COUNT),
+            Triple("Who is it?", R.drawable.ic_tile_sound, Routes.SOUND),
+        )
         Column(Modifier.fillMaxSize().padding(top = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            BigTile("Shapes", R.drawable.ic_tile_shapes, Palette.sun, Modifier.weight(1f).fillMaxWidth()) { onOpen(Routes.SHAPES) }
-            BigTile("Find it", R.drawable.ic_tile_match, Palette.mint, Modifier.weight(1f).fillMaxWidth()) { onOpen(Routes.MATCH) }
-            BigTile("Picture", R.drawable.ic_tile_jigsaw, Palette.grape, Modifier.weight(1f).fillMaxWidth()) { onOpen(Routes.JIGSAW) }
+            games.chunked(2).forEachIndexed { r, pair ->
+                Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    pair.forEachIndexed { c, (label, icon, route) ->
+                        BigTile(label, icon, Palette.tiles[(r * 2 + c + 1) % Palette.tiles.size], Modifier.weight(1f).fillMaxSize()) { onOpen(route) }
+                    }
+                }
+            }
         }
     }
 }

@@ -310,6 +310,28 @@ ICONS["tile_jigsaw"] = [
     F(rrect(18, 18, 30, 30, 4), WHITE), F(rrect(52, 18, 30, 30, 4), SKY),
     F(rrect(18, 52, 30, 30, 4), SKY), F(rrect(52, 52, 30, 30, 4), WHITE),
 ]
+ICONS["apple"] = [
+    F(circle(42, 56, 30), RED), F(circle(60, 56, 30), RED),
+    F(rrect(48, 14, 6, 20, 3), DARKBROWN),
+    F("M54,26C60,14 74,14 78,22C70,30 60,30 54,26Z", GREEN),
+    F(ellipse(36, 44, 6, 9), "#FCA5A5"),
+]
+ICONS["star_gold"] = [F(star(50, 54, 42, 18), YELLOW), F(star(50, 54, 42, 18), "#FDE68A") if False else F(ellipse(40, 40, 5, 7), "#FEF3C7")]
+ICONS["heart_pink"] = [F(heart(50, 52, 36), PINK), F(ellipse(36, 38, 6, 8), "#FBCFE8")]
+ICONS["tile_colors"] = [
+    F("M50,12C50,12 24,42 24,60a26,26 0 0 0 52,0C76,42 50,12 50,12Z", SKY),
+    F("M70,40C70,40 56,58 56,68a14,14 0 0 0 28,0C84,58 70,40 70,40Z", RED),
+    F("M30,44C30,44 18,58 18,66a12,12 0 0 0 24,0C42,58 30,44 30,44Z", YELLOW),
+]
+ICONS["tile_count"] = [
+    F(circle(26, 30, 11), WHITE), F(circle(50, 30, 11), WHITE), F(circle(74, 30, 11), WHITE),
+    F(rrect(20, 54, 60, 30, 8), WHITE),
+    F(poly((40, 60), (46, 60), (46, 78), (40, 78)), INK), F(poly((52, 60), (66, 60), (66, 66), (58, 66), (58, 68), (66, 68), (66, 78), (52, 78), (52, 72), (60, 72), (60, 70), (52, 70)), INK),
+]
+ICONS["tile_sound"] = [
+    F(poly((20, 40), (34, 40), (52, 24), (52, 76), (34, 60), (20, 60)), WHITE),
+    S("M62,38Q70,50 62,62", WHITE, 6), S("M72,28Q86,50 72,72", WHITE, 6),
+]
 ICONS["tile_call"] = ICONS["tile_phone"]
 
 # ----- dial pad extras -----
