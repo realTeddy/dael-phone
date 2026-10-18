@@ -51,6 +51,9 @@ def phrases(child: str):
         out.append((f"{n}!", NARRATOR))
     for sh in SHAPES:
         out.append((f"{sh}!", NARRATOR))
+    for name in ANIMALS:
+    for name in ANIMALS:
+        out.append((f"Find the {name}!", NARRATOR))
     out.append(("Yay! You did it!", NARRATOR))
     out.append(("Try again!", NARRATOR))
     for name, voice in CHARACTERS:
@@ -70,15 +73,21 @@ def phrases(child: str):
 
 def synth(pipe, text, voice, np):
     """Single words come out clipped when synthesized alone ("six" loses its final consonant), so short
-    phrases are generated with a continuation sentence and cut at the phrase's end timestamp."""
+    phrases are generated with a continuation sentence and cut where the continuation begins. Cutting at
+    the last word's own end timestamp proved too early for longer words ("Apple", "Triangle")."""
     if len(text.split()) <= 2:
-        results = list(pipe(f"{text}. Okay then.", voice=voice, speed=0.95))
-        tokens = [t for r in results for t in (r.tokens or [])]
+        results = list(pipe(f"{text} Okay then.", voice=voice, speed=0.95))
+        # Punctuation comes back as its own tokens; only real words count toward the cut point.
+        tokens = [t for r in results for t in (r.tokens or []) if re.search(r"[A-Za-z0-9]", t.text)]
         full = np.concatenate([r.audio.numpy() for r in results])
         n_words = len(text.split())
-        end = tokens[n_words - 1].end_ts if len(tokens) >= n_words else None
-        if end:
-            audio = full[: int((end + 0.15) * 24000)]
+        nxt = tokens[n_words] if len(tokens) > n_words else None
+        if nxt is not None and nxt.start_ts:
+            audio = full[: int((nxt.start_ts - 0.02) * 24000)]
+            # Fade the last 60 ms so any bleed from the next word is inaudible.
+            fade = int(0.06 * 24000)
+            if len(audio) > fade:
+                audio[-fade:] = audio[-fade:] * np.linspace(1.0, 0.0, fade, dtype=audio.dtype)
         else:
             audio = np.concatenate([r.audio.numpy() for r in pipe(text, voice=voice, speed=0.95)])
     else:
@@ -92,6 +101,7 @@ def main():
     ap.add_argument("--child", default="Dael")
     ap.add_argument("--only-missing", action="store_true")
     ap.add_argument("--filter", default="", help="only phrases containing this text")
+    ap.add_argument("--short", action="store_true", help="only phrases of one or two words")
     args = ap.parse_args()
 
     from kokoro import KPipeline
@@ -109,6 +119,8 @@ def main():
             if args.only_missing and os.path.exists(target):
                 continue
             if args.filter and args.filter not in text:
+                continue
+            if args.short and len(text.split()) > 2:
                 continue
             audio = synth(pipe, text, voice, np)
             wav = os.path.join(tmp, name + ".wav")

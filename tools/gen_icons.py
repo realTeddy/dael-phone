@@ -291,6 +291,25 @@ ICONS["tile_shapes"] = [
     F(rrect(54, 16, 32, 32, 5), WHITE),
     F(poly((50, 54), (22, 88), (78, 88)), WHITE),
 ]
+ICONS["tile_match"] = [
+    F(rrect(10, 22, 36, 48, 8), WHITE), F(rrect(54, 22, 36, 48, 8), WHITE),
+    F(circle(28, 46, 11), CORAL_TILE := "#FF7A59"), F(circle(72, 46, 11), "#FF7A59"),
+    F(rrect(14, 74, 72, 10, 5), YELLOW),
+]
+ICONS["tile_puzzle"] = [
+    F("M22,22h22a8,8 0 0,1 16,0h22v22a8,8 0 0,1 0,16v22H60a8,8 0 0,0 -16,0H22V60a8,8 0 0,0 0,-16Z", WHITE),
+]
+ICONS["tile_puzzles"] = [  # a jigsaw piece
+    F("M30,22h18v-6a8,8 0 0 1 16,0v6h18v18h6a8,8 0 0 1 0,16h-6v18h-18v6a8,8 0 0 1 -16,0v-6h-18v-18h-6a8,8 0 0 1 0,-16h6z", WHITE),
+]
+ICONS["tile_match"] = [
+    F(rrect(14, 30, 32, 40, 8), WHITE), F(rrect(54, 30, 32, 40, 8), WHITE),
+    F(circle(30, 50, 10), SKY), F(circle(70, 50, 10), SKY),
+]
+ICONS["tile_jigsaw"] = [
+    F(rrect(18, 18, 30, 30, 4), WHITE), F(rrect(52, 18, 30, 30, 4), SKY),
+    F(rrect(18, 52, 30, 30, 4), SKY), F(rrect(52, 52, 30, 30, 4), WHITE),
+]
 ICONS["tile_call"] = ICONS["tile_phone"]
 
 # ----- dial pad extras -----

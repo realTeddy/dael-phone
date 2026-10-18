@@ -49,7 +49,7 @@ val homeApps = listOf(
     HomeApp(Routes.PAINT, "Paint", R.drawable.ic_tile_paint),
     HomeApp(Routes.PEEKABOO, "Peekaboo", R.drawable.ic_tile_peekaboo),
     HomeApp(Routes.PHOTOS, "Photos", R.drawable.ic_tile_photos),
-    HomeApp(Routes.SHAPES, "Shapes", R.drawable.ic_tile_shapes),
+    HomeApp(Routes.PUZZLES, "Puzzles", R.drawable.ic_tile_puzzles),
 )
 
 @Composable

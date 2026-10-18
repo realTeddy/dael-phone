@@ -12,6 +12,9 @@ object Routes {
     const val BUBBLES = "bubbles"
     const val PHOTOS = "photos"
     const val SHAPES = "shapes"
+    const val PUZZLES = "puzzles"
+    const val MATCH = "match"
+    const val JIGSAW = "jigsaw"
     const val GATE = "gate"
     const val SETTINGS = "settings"
 
