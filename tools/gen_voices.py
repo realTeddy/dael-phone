@@ -18,12 +18,15 @@ RAW = os.path.join(HERE, "..", "app", "src", "main", "res", "raw")
 FEMALE, MALE, NARRATOR = "af_heart", "am_michael", "af_heart"
 FEMALE_NAMES = ["Mom", "Mama", "Mommy", "Grandma", "Nana", "Auntie", "Sister"]
 MALE_NAMES = ["Dad", "Papa", "Daddy", "Grandpa", "Uncle", "Brother"]
-ANIMALS = [("Dog", "Woof woof!"), ("Cat", "Meow!"), ("Cow", "Moo!"), ("Pig", "Oink oink!"),
-           ("Chicken", "Cluck cluck!"), ("Duck", "Quack quack!"), ("Sheep", "Baa!"), ("Horse", "Neigh!"),
-           ("Lion", "Roar!"), ("Elephant", "Toot!"), ("Frog", "Ribbit!"), ("Monkey", "Ooh ooh ah ah!")]
-CHARACTERS = [("Lion", "Roar! Roar!", MALE), ("Frog", "Ribbit ribbit!", FEMALE), ("Cow", "Moo! Moo!", FEMALE),
-              ("Chicken", "Cluck cluck cluck!", FEMALE), ("Puppy", "Woof woof!", FEMALE), ("Kitty", "Meow meow!", FEMALE),
-              ("Fire truck", "Nee naw nee naw!", MALE), ("Train", "Choo choo!", MALE), ("Robot", "Beep boop beep!", MALE)]
+ANIMALS = ["Dog", "Cat", "Cow", "Horse", "Pig", "Sheep", "Chicken", "Rooster", "Goose", "Donkey", "Goat"]
+CHARACTERS = [("Donkey", MALE), ("Goat", FEMALE), ("Cow", FEMALE), ("Rooster", FEMALE), ("Puppy", FEMALE),
+              ("Kitty", FEMALE), ("Fire truck", MALE), ("Train", MALE), ("Robot", MALE)]
+LETTERS = {"A": "Apple", "B": "Ball", "C": "Cat", "D": "Dog", "E": "Egg", "F": "Fish", "G": "Goat", "H": "Hat",
+           "I": "Igloo", "J": "Juice", "K": "Kite", "L": "Lion", "M": "Moon", "N": "Nose", "O": "Orange",
+           "P": "Pig", "Q": "Queen", "R": "Rabbit", "S": "Sun", "T": "Train", "U": "Umbrella", "V": "Van",
+           "W": "Water", "X": "Box", "Y": "Yellow", "Z": "Zebra"}
+NUMBERS = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"]
+SHAPES = ["Circle", "Square", "Triangle", "Star", "Heart"]
 COLORS = ["Red", "Blue", "Green", "Yellow", "Purple", "Pink", "Orange"]
 DIGITS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "star", "heart"]
 
@@ -40,9 +43,17 @@ def phrases(child: str):
         out.append((d, NARRATOR))
     for c in COLORS:
         out.append((f"{c}!", NARRATOR))
-    for name, sound in ANIMALS:
-        out.append((f"{name}. {sound}", NARRATOR))
-    for name, line, voice in CHARACTERS:
+    for name in ANIMALS:
+        out.append((f"{name}!", NARRATOR))
+    for letter, word in LETTERS.items():
+        out.append((f"{letter}! {word}!", NARRATOR))
+    for n in NUMBERS:
+        out.append((f"{n}!", NARRATOR))
+    for sh in SHAPES:
+        out.append((f"{sh}!", NARRATOR))
+    out.append(("Yay! You did it!", NARRATOR))
+    out.append(("Try again!", NARRATOR))
+    for name, voice in CHARACTERS:
         out.append((f"Hello {child}! This is the {name}!", voice))
     out.append(("Bye bye!", FEMALE))
     for name in FEMALE_NAMES + MALE_NAMES:

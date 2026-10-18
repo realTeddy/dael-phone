@@ -25,6 +25,8 @@ import me.tewodros.dael.ui.games.BubblesScreen
 import me.tewodros.dael.ui.games.PaintScreen
 import me.tewodros.dael.ui.games.PeekabooScreen
 import me.tewodros.dael.ui.games.PianoScreen
+import me.tewodros.dael.ui.games.ShapesScreen
+import me.tewodros.dael.ui.media.PhotosScreen
 import me.tewodros.dael.ui.parent.ParentGateScreen
 import me.tewodros.dael.ui.parent.ParentSettingsScreen
 import kotlin.random.Random
@@ -48,7 +50,7 @@ fun DaelApp(repo: Repo, onExitApp: () -> Unit) {
             delay(base + Random.nextLong(base / 2))
             val now = nav.current
             val onSafeScreen = now != Routes.GATE && now != Routes.SETTINGS &&
-                !now.startsWith("call/") && now != Routes.RANDOM_CALL
+                !now.startsWith("call/") && now != Routes.RANDOM_CALL && now != Routes.PHOTOS
             if (incoming == null && onSafeScreen) incoming = contacts.random()
         }
     }
@@ -111,6 +113,8 @@ private fun Screen(
         route == Routes.PAINT -> PaintScreen { nav.back() }
         route == Routes.PEEKABOO -> PeekabooScreen(contacts) { nav.back() }
         route == Routes.BUBBLES -> BubblesScreen { nav.back() }
+        route == Routes.PHOTOS -> PhotosScreen { nav.back() }
+        route == Routes.SHAPES -> ShapesScreen { nav.back() }
         route == Routes.GATE -> ParentGateScreen(
             onPass = { nav.navigate(Routes.SETTINGS, popUpTo = Routes.HOME) },
             onCancel = { nav.back() },

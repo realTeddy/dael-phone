@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,6 +48,8 @@ val homeApps = listOf(
     HomeApp(Routes.PIANO, "Piano", R.drawable.ic_tile_piano),
     HomeApp(Routes.PAINT, "Paint", R.drawable.ic_tile_paint),
     HomeApp(Routes.PEEKABOO, "Peekaboo", R.drawable.ic_tile_peekaboo),
+    HomeApp(Routes.PHOTOS, "Photos", R.drawable.ic_tile_photos),
+    HomeApp(Routes.SHAPES, "Shapes", R.drawable.ic_tile_shapes),
 )
 
 @Composable
@@ -73,22 +76,22 @@ fun HomeScreen(onOpen: (String) -> Unit, onParentGate: () -> Unit) {
                     Icon(painterResource(R.drawable.ic_battery), null, tint = Color.Unspecified, modifier = Modifier.size(26.dp))
                 }
             }
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 24.dp, top = 8.dp, bottom = 8.dp)) {
-                Text("Hi!", color = Color.White, fontSize = 40.sp, fontWeight = FontWeight.ExtraBold)
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 24.dp, top = 2.dp, bottom = 2.dp)) {
+                Text("Hi!", color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold)
                 Spacer(Modifier.width(10.dp))
-                Icon(painterResource(R.drawable.ic_hand_wave), null, tint = Color.Unspecified, modifier = Modifier.size(44.dp))
+                Icon(painterResource(R.drawable.ic_hand_wave), null, tint = Color.Unspecified, modifier = Modifier.size(36.dp))
             }
             // Plain rows instead of a lazy grid: six fixed tiles need no recycling,
             // and fewer moving parts means fewer ways to end up with a blank screen.
             Column(
-                Modifier.fillMaxSize().padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+                Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 homeApps.chunked(2).forEachIndexed { rowIdx, pair ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                    Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         pair.forEachIndexed { colIdx, app ->
                             val idx = rowIdx * 2 + colIdx
-                            BigTile(app.label, app.icon, Palette.tiles[idx % Palette.tiles.size], Modifier.weight(1f)) { onOpen(app.route) }
+                            BigTile(app.label, app.icon, Palette.tiles[idx % Palette.tiles.size], Modifier.weight(1f).fillMaxHeight()) { onOpen(app.route) }
                         }
                     }
                 }

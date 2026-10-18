@@ -9,6 +9,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.speech.tts.Voice
 import androidx.compose.runtime.staticCompositionLocalOf
+import java.io.File
 import java.util.Locale
 
 /**
@@ -49,16 +50,29 @@ class Speaker(context: Context) {
             return
         }
         if (!ready) { onDone?.invoke(); return }
-        val mode = if (interrupt) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD
+        // Fallback: synthesize to a file and play it through MediaPlayer so it follows the same
+        // speaker routing as every other sound. Direct TTS playback cannot be routed and would
+        // come out of connected earbuds.
+        if (interrupt) stop()
+        val file = File(app.cacheDir, "tts_${slug(text)}.wav")
+        if (file.exists() && file.length() > 0) { playFile(file, onDone); return }
         val id = text.hashCode().toString()
-        if (onDone != null) {
-            tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                override fun onStart(utteranceId: String?) {}
-                override fun onError(utteranceId: String?) { if (utteranceId == id) mainHandler.post(onDone) }
-                override fun onDone(utteranceId: String?) { if (utteranceId == id) mainHandler.post(onDone) }
-            })
-        }
-        tts.speak(text, mode, null, id)
+        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {}
+            override fun onError(utteranceId: String?) { if (utteranceId == id) mainHandler.post { onDone?.invoke() } }
+            override fun onDone(utteranceId: String?) { if (utteranceId == id) mainHandler.post { playFile(file, onDone) } }
+        })
+        tts.synthesizeToFile(text, null, file, id)
+    }
+
+    private fun playFile(file: File, onDone: (() -> Unit)?) {
+        val mp = MediaPlayer()
+        runCatching {
+            mp.setAudioAttributes(attrs)
+            mp.setDataSource(file.absolutePath)
+            mp.prepare()
+        }.onFailure { mp.release(); onDone?.invoke(); return }
+        startPlayer(mp, onDone)
     }
 
     /** Plays a bundled sound effect such as a real animal recording (res/raw/s_<key>.ogg). */
@@ -73,13 +87,25 @@ class Speaker(context: Context) {
         say(text) { sound(soundKey, interrupt = false, onDone = onDone) }
     }
 
+    private val attrs = AudioAttributes.Builder()
+        .setUsage(AudioAttributes.USAGE_MEDIA)
+        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+        .build()
+
     private fun playRaw(resId: Int, interrupt: Boolean, onDone: (() -> Unit)?) {
         if (interrupt) stop()
-        val mp = MediaPlayer.create(app, resId, AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_MEDIA)
-            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-            .build(), 0)
-        if (mp == null) { onDone?.invoke(); return }
+        // Build the player by hand so the preferred output device is set before prepare().
+        val mp = MediaPlayer()
+        runCatching {
+            mp.setAudioAttributes(attrs)
+            AudioRoute.apply(app, mp)
+            app.resources.openRawResourceFd(resId).use { fd -> mp.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length) }
+            mp.prepare()
+        }.onFailure { mp.release(); onDone?.invoke(); return }
+        startPlayer(mp, onDone)
+    }
+
+    private fun startPlayer(mp: MediaPlayer, onDone: (() -> Unit)?) {
         player = mp
         AudioRoute.apply(app, mp)
         mp.setOnCompletionListener {

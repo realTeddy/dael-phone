@@ -10,6 +10,8 @@ object Routes {
     const val PAINT = "paint"
     const val PEEKABOO = "peekaboo"
     const val BUBBLES = "bubbles"
+    const val PHOTOS = "photos"
+    const val SHAPES = "shapes"
     const val GATE = "gate"
     const val SETTINGS = "settings"
 

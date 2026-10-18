@@ -8,7 +8,12 @@ A pretend phone for a toddler. Everything is local: no network, no real calls, n
 - **Family**: tap Mom, Dad, or anyone else to start a pretend video call that plays a clip you recorded.
   The front camera shows the child's own face in the corner like a real call.
 - **Surprise incoming calls**: every few minutes someone from the family "calls".
-- **Animals, Piano, Paint, Peekaboo** games.
+- **Animals**: farm animals that say their name, then play a real recording.
+- **Bubbles**: pop bubbles that say their color, or switch to ABC (letter name plus a word) or 123
+  (numeral with that many dots, bursting into that many little bubbles). Letters and numbers come in order.
+- **Shapes**: drag each shape onto its outline; a cheer when the round is done.
+- **Photos**: read-only browser of the phone's photos and videos, big previous/next buttons, nothing else.
+- **Piano, Paint, Peekaboo** games.
 - **Parent settings**: hold the top-right corner of the home screen for 3 seconds, then answer a
   multiplication question. From there you add photos, record or pick videos, toggle kiosk mode,
   and exit the app.
@@ -19,6 +24,14 @@ With kiosk mode on, the app pins itself (Android screen pinning) on every resume
 Back gestures cannot leave it. Android shows a one-time confirmation dialog the first time.
 Use "Unpin and exit app" in parent settings to leave. The app also registers as a HOME launcher,
 so on a dedicated old phone you can make it the default home screen.
+
+## Why the letters and numbers work the way they do
+
+At 18 months to 2 years the goal is playful exposure, not drilling. Research on early counting shows
+toddlers pick up the counting sequence from hearing it repeated, and connect number words to quantities
+later (around 2 to 3). So the number bubbles always show the quantity as dots and burst into that many
+pieces, and letters are uppercase (recognized first) with the letter name followed by a familiar word.
+Both are served in order so repeated play walks through the whole sequence, like the alphabet song.
 
 ## Voices and icons
 

@@ -154,10 +154,10 @@ fun VideoCallScreen(contact: Contact, childName: String, skipRinging: Boolean, o
 private data class Character(val icon: Int, val name: String, val key: String)
 
 private val characters = listOf(
-    Character(R.drawable.ic_lion, "Lion", "lion"),
-    Character(R.drawable.ic_frog, "Frog", "frog"),
+    Character(R.drawable.ic_donkey, "Donkey", "donkey"),
+    Character(R.drawable.ic_goat, "Goat", "goat"),
     Character(R.drawable.ic_cow, "Cow", "cow"),
-    Character(R.drawable.ic_chicken, "Chicken", "chicken"),
+    Character(R.drawable.ic_rooster, "Rooster", "rooster"),
     Character(R.drawable.ic_dog, "Puppy", "dog"),
     Character(R.drawable.ic_cat, "Kitty", "cat"),
     Character(R.drawable.ic_firetruck, "Fire truck", "firetruck"),

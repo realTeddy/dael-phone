@@ -160,6 +160,39 @@ ICONS["monkey"] = [
     S("M42,68Q50,74 58,68", INK, 2.5),
 ]
 
+ICONS["rooster"] = [
+    F(circle(38, 18, 7), RED), F(circle(50, 13, 8), RED), F(circle(62, 18, 7), RED),
+    F(circle(50, 54, 30), "#F5E6C8"),
+    *eyes(y=46, dx=11),
+    F(poly((40, 56), (62, 56), (51, 70)), ORANGE),
+    F(ellipse(50, 78, 7, 10), RED),
+]
+ICONS["goose"] = [
+    F(circle(50, 50, 30), WHITE),
+    *eyes(y=44, dx=11),
+    F(ellipse(50, 66, 20, 9), ORANGE),
+    S(line(32, 66, 68, 66), "#C2410C", 1.6),
+    F(ellipse(46, 62, 2, 1.5), "#C2410C"), F(ellipse(54, 62, 2, 1.5), "#C2410C"),
+]
+ICONS["donkey"] = [
+    F(ellipse(30, 22, 7, 18), GRAY), F(ellipse(70, 22, 7, 18), GRAY),
+    F(ellipse(30, 22, 3.5, 12), PINK), F(ellipse(70, 22, 3.5, 12), PINK),
+    F(ellipse(50, 56, 24, 30), GRAY),
+    F("M34,34Q50,22 66,34Q58,30 50,38Q42,30 34,34Z", DARKGRAY),
+    *eyes(y=48, dx=11),
+    F(ellipse(50, 74, 15, 10), "#D4D4D8"),
+    F(ellipse(45, 74, 2.5, 3.5), INK), F(ellipse(55, 74, 2.5, 3.5), INK),
+]
+ICONS["goat"] = [
+    F(poly((36, 28), (30, 8), (44, 24)), "#A16207"), F(poly((64, 28), (70, 8), (56, 24)), "#A16207"),
+    F(ellipse(20, 52, 10, 6), WHITE), F(ellipse(80, 52, 10, 6), WHITE),
+    F(ellipse(50, 54, 24, 30), WHITE),
+    *eyes(y=48, dx=10),
+    F(ellipse(50, 70, 12, 8), "#E5E7EB"),
+    F(ellipse(46, 70, 2, 3), INK), F(ellipse(54, 70, 2, 3), INK),
+    F(ellipse(50, 86, 5, 8), "#E5E7EB"),
+]
+
 # ----- vehicles & robot (random call characters) -----
 ICONS["firetruck"] = [
     F(rrect(8, 40, 84, 34, 6), RED),
@@ -246,6 +279,17 @@ ICONS["tile_bubbles"] = [
     F(circle(36, 58, 24), "#DDEBFF"), F(circle(70, 34, 16), "#DDEBFF"), F(circle(72, 72, 11), "#DDEBFF"),
     F(circle(28, 48, 6), WHITE), F(circle(65, 27, 4), WHITE), F(circle(69, 68, 3), WHITE),
     S(circle(36, 58, 24), WHITE, 3), S(circle(70, 34, 16), WHITE, 3), S(circle(72, 72, 11), WHITE, 2.5),
+]
+ICONS["tile_photos"] = [
+    F(rrect(12, 18, 76, 64, 8), WHITE),
+    F(rrect(18, 24, 64, 52, 4), SKY),
+    F(circle(66, 38, 7), YELLOW),
+    F(poly((18, 76), (40, 44), (56, 64), (66, 54), (82, 76)), GREEN),
+]
+ICONS["tile_shapes"] = [
+    F(circle(30, 32, 16), WHITE),
+    F(rrect(54, 16, 32, 32, 5), WHITE),
+    F(poly((50, 54), (22, 88), (78, 88)), WHITE),
 ]
 ICONS["tile_call"] = ICONS["tile_phone"]
 

@@ -4,3 +4,6 @@ local.properties
 .idea/
 *.iml
 .kotlin/
+tools/tts/.venv/
+tools/tts/*.lock
+tools/tts/.python-version

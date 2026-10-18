@@ -51,7 +51,6 @@ fun BigTile(
     val scale by animateFloatAsState(if (pressed) 0.9f else 1f, spring(dampingRatio = 0.4f), label = "tile")
     Column(
         modifier = modifier
-            .aspectRatio(1f)
             .scale(scale)
             .clip(RoundedCornerShape(28.dp))
             .background(color)
@@ -63,8 +62,8 @@ fun BigTile(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
     ) {
-        Icon(painterResource(icon), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.size(72.dp))
-        Text(label, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White, textAlign = TextAlign.Center)
+        Icon(painterResource(icon), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.size(64.dp))
+        Text(label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White, textAlign = TextAlign.Center)
     }
 }
 

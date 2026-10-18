@@ -47,15 +47,14 @@ private val animals = listOf(
     Animal(R.drawable.ic_dog, "Dog", "dog"),
     Animal(R.drawable.ic_cat, "Cat", "cat"),
     Animal(R.drawable.ic_cow, "Cow", "cow"),
-    Animal(R.drawable.ic_pig, "Pig", "pig"),
-    Animal(R.drawable.ic_chicken, "Chicken", "chicken"),
-    Animal(R.drawable.ic_duck, "Duck", "duck"),
-    Animal(R.drawable.ic_sheep, "Sheep", "sheep"),
     Animal(R.drawable.ic_horse, "Horse", "horse"),
-    Animal(R.drawable.ic_lion, "Lion", "lion"),
-    Animal(R.drawable.ic_elephant, "Elephant", "elephant"),
-    Animal(R.drawable.ic_frog, "Frog", "frog"),
-    Animal(R.drawable.ic_monkey, "Monkey", "monkey"),
+    Animal(R.drawable.ic_pig, "Pig", "pig"),
+    Animal(R.drawable.ic_sheep, "Sheep", "sheep"),
+    Animal(R.drawable.ic_chicken, "Chicken", "chicken"),
+    Animal(R.drawable.ic_rooster, "Rooster", "rooster"),
+    Animal(R.drawable.ic_goose, "Goose", "goose"),
+    Animal(R.drawable.ic_donkey, "Donkey", "donkey"),
+    Animal(R.drawable.ic_goat, "Goat", "goat"),
 )
 
 @Composable
@@ -86,7 +85,7 @@ fun AnimalsScreen(onBack: () -> Unit) {
                         .clickable {
                             active = i
                             Tones.play(300.0 + i * 50, 200)
-                            speaker.sayThenSound(a.name, a.key)
+                            speaker.sayThenSound("${a.name}!", a.key)
                         },
                     contentAlignment = Alignment.Center,
                 ) { Icon(painterResource(a.icon), contentDescription = a.name, tint = Color.Unspecified, modifier = Modifier.fillMaxSize(0.8f)) }
